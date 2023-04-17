@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 1 && resultCode == RESULT_OK){
+        if(requestCode == 100 && resultCode == RESULT_OK){
             Bitmap image = (Bitmap) data.getExtras().get("data");
             int dimension = Math.min(image.getWidth(),image.getHeight());
             image = ThumbnailUtils.extractThumbnail(image,dimension,dimension);
