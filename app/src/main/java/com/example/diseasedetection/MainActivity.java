@@ -77,22 +77,27 @@ public class MainActivity extends AppCompatActivity {
                 imageView.setImageBitmap(imageBitmap);
             }
         }
-    }private static final String IMAGE_BITMAP_KEY = "imageBitmap";
+    }
+    private static final String IMAGE_BITMAP_KEY = "imageBitmap";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // Save the image bitmap to the bundle
-        Bitmap imageBitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        outState.putParcelable(IMAGE_BITMAP_KEY, imageBitmap);
+        BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
+        if (drawable != null) {
+            Bitmap imageBitmap = drawable.getBitmap();
+            outState.putParcelable(IMAGE_BITMAP_KEY, imageBitmap);
+        }
     }
+
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 1){
+        if(requestCode == 100){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, 1);
