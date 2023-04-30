@@ -109,35 +109,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 100 && resultCode == RESULT_OK){
-            Bitmap image = (Bitmap) data.getExtras().get("data");
-            int dimension = Math.min(image.getWidth(),image.getHeight());
-            image = ThumbnailUtils.extractThumbnail(image,dimension,dimension);
-
-            // set the bitmap to the ImageView
-            imageView.setImageBitmap(image);
-
-            demoText.setVisibility(View.GONE);
-            clickhere.setVisibility(View.VISIBLE);
-            arrowImage.setVisibility(View.GONE);
-            classified.setVisibility(View.VISIBLE);
-            result.setVisibility(View.VISIBLE);
-
-            image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-            classifyImage(image);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-//    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        if(requestCode == 100 && resultCode == RESULT_OK){
 //            Bitmap image = (Bitmap) data.getExtras().get("data");
 //            int dimension = Math.min(image.getWidth(),image.getHeight());
 //            image = ThumbnailUtils.extractThumbnail(image,dimension,dimension);
 //
-//            // initialize the imageView here
-//            ImageView imageView = findViewById(R.id.imageView);
+//            // set the bitmap to the ImageView
 //            imageView.setImageBitmap(image);
 //
 //            demoText.setVisibility(View.GONE);
@@ -145,74 +123,43 @@ public class MainActivity extends AppCompatActivity {
 //            arrowImage.setVisibility(View.GONE);
 //            classified.setVisibility(View.VISIBLE);
 //            result.setVisibility(View.VISIBLE);
-//// Yha Pr Method Call Hua h Model Wala yh do Commented out lines hai
-//      image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
-//           classifyImage(image);
 //
-//            // rest of the code...
+//            image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+//            classifyImage(image);
 //        }
 //        super.onActivityResult(requestCode, resultCode, data);
 //    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 100 && resultCode == RESULT_OK){
+            Bitmap image = (Bitmap) data.getExtras().get("data");
+            int dimension = Math.min(image.getWidth(),image.getHeight());
+            image = ThumbnailUtils.extractThumbnail(image,dimension,dimension);
 
-//    private void classifyImage(Bitmap image) {
-//        try {
-//            DiseaseDetection model = DiseaseDetection.newInstance(getApplicationContext());
-//
-//            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
-//            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
-//            byteBuffer.order(ByteOrder.nativeOrder());
-//
-//            // Get ID of array of 224*224 pixel in image
-//            int[] intValues = new int[imageSize * imageSize];
-//            image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
-//            // Iterate over pixel and extract R,G,B values
-//
-//            int pixel = 0;
-//            for (int i = 0; i < imageSize; i++) {
-//                for (int j = 0; j < imageSize; j++) {
-//                    int val = intValues[pixel++];// RGB
-//                    byteBuffer.putFloat((((val >> 16) & 0xFF) * (1.f / 255.f)));
-//                    byteBuffer.putFloat((((val >> 8) & 0xFF) * (1.f / 255.f)));
-//                    byteBuffer.putFloat((val & 0xFF) * (1.f / 255.f));
-//                }
-//            }
-//            inputFeature0.loadBuffer(byteBuffer);
-//
-//            // Run the model and get the result
-//            DiseaseDetection.Outputs outputs = model.process(inputFeature0);
-//            TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
-//
-//            float[] confidence = outputFeature0.getFloatArray();
-//
-//            // Find the index of the class with the maximum confidence
-//            int maxPos = 0;
-//            float maxConfidence = confidence[0];
-//            for (int i = 1; i < confidence.length; i++) {
-//                if (confidence[i] > maxConfidence) {
-//                    maxPos = i;
-//                    maxConfidence = confidence[i];
-//                }
-//            }
-//
-//            // Set the result TextView with the predicted class and confidence
-//            String[] classes = {"Apple black rot" , "Corn gray leaf spot" ," Grape black rot", "Orange haunglongbing", "Peach bacterial spot", "Potato early blight",  "Strawberry leaf scorch" }; // Replace with your own class labels
-//            String resultText = "Prediction: " + classes[maxPos] + "\nConfidence: " + maxConfidence;
-//            result.setText(resultText);
-//
-//            model.close();
-//        } catch (IOException e) {
-//            // Handle the exception
-//        }
-//    }
+            // initialize the imageView here
+            ImageView imageView = findViewById(R.id.imageView);
+            imageView.setImageBitmap(image);
 
+            demoText.setVisibility(View.GONE);
+            clickhere.setVisibility(View.VISIBLE);
+            arrowImage.setVisibility(View.GONE);
+            classified.setVisibility(View.VISIBLE);
+            result.setVisibility(View.VISIBLE);
+// Yha Pr Method Call Hua h Model Wala yh do Commented out lines hai
+      //image = Bitmap.createScaledBitmap(image,imageSize,imageSize,false);
+          // classifyImage(image);
 
+            // rest of the code...
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     private void classifyImage(Bitmap image) {
         try {
             DiseaseDetection model = DiseaseDetection.newInstance(getApplicationContext());
 
             TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4* imageSize * imageSize * 3);
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
             // Get ID of array of 224*224 pixel in image
@@ -220,53 +167,106 @@ public class MainActivity extends AppCompatActivity {
             image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
             // Iterate over pixel and extract R,G,B values
 
-            int pixel =0;
-            for (int i = 0; i < imageSize; ++i) {
-                for (int j = 0; j < imageSize; ++j) {
+            int pixel = 0;
+            for (int i = 0; i < imageSize; i++) {
+                for (int j = 0; j < imageSize; j++) {
                     int val = intValues[pixel++];// RGB
-                    byteBuffer.putFloat((((val >> 16) & 0xFF)* (1.f/255.f)));
-                    byteBuffer.putFloat((((val >> 8) & 0xFF)* (1.f/255.f)));
-                    byteBuffer.putFloat((val & 0xFF)* (1.f/255.f));
-
-
+                    byteBuffer.putFloat((((val >> 16) & 0xFF) * (1.f / 255.f)));
+                    byteBuffer.putFloat((((val >> 8) & 0xFF) * (1.f / 255.f)));
+                    byteBuffer.putFloat((val & 0xFF) * (1.f / 255.f));
                 }
             }
             inputFeature0.loadBuffer(byteBuffer);
 
-            // run model interface and gets result
-
+            // Run the model and get the result
             DiseaseDetection.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidence = outputFeature0.getFloatArray();
 
-            // find the index of class with maximum confidence
-
+            // Find the index of the class with the maximum confidence
             int maxPos = 0;
             float maxConfidence = confidence[0];
-            for(int i = 0; i < confidence.length; i++){
-                if(confidence[i] > maxConfidence){
-                    maxConfidence = confidence[i];
+            for (int i = 1; i < confidence.length; i++) {
+                if (confidence[i] > maxConfidence) {
                     maxPos = i;
+                    maxConfidence = confidence[i];
                 }
             }
 
-            String[] classes = {"Tomato healthy" , "Tomato Tomato mosaic virus" ," Tomato YellowLeaf Curl Virus", "Tomato Target Spot", "Tomato Spider mites Two spotted spider mite", "Tomato Septoria leaf spot",  "Tomato Leaf Mold","Tomato Late blight","Tomato Early blight", "Tomato Bacterial spot" };
-
-            result.setText(classes[maxPos]);
-            result.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://www.google.com/search?q="+ result.getText().toString())));
-                }
-            });
+            // Set the result TextView with the predicted class and confidence
+            String[] classes = {"Apple black rot" , "Corn gray leaf spot" ," Grape black rot", "Orange haunglongbing", "Peach bacterial spot", "Potato early blight",  "Strawberry leaf scorch" }; // Replace with your own class labels
+            String resultText = "Prediction: " + classes[maxPos] + "\nConfidence: " + maxConfidence;
+            result.setText(resultText);
 
             model.close();
-        }
-
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            // Handle the exception
         }
     }
+
+
+
+//    private void classifyImage(Bitmap image) {
+//        try {
+//            DiseaseDetection model = DiseaseDetection.newInstance(getApplicationContext());
+//
+//            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
+//            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4* imageSize * imageSize * 3);
+//            byteBuffer.order(ByteOrder.nativeOrder());
+//
+//            // Get ID of array of 224*224 pixel in image
+//            int[] intValues = new int[imageSize * imageSize];
+//            image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+//            // Iterate over pixel and extract R,G,B values
+//
+//            int pixel =0;
+//            for (int i = 0; i < imageSize; ++i) {
+//                for (int j = 0; j < imageSize; ++j) {
+//                    int val = intValues[pixel++];// RGB
+//                    byteBuffer.putFloat((((val >> 16) & 0xFF)* (1.f/255.f)));
+//                    byteBuffer.putFloat((((val >> 8) & 0xFF)* (1.f/255.f)));
+//                    byteBuffer.putFloat((val & 0xFF)* (1.f/255.f));
+//
+//
+//                }
+//            }
+//            inputFeature0.loadBuffer(byteBuffer);
+//
+//            // run model interface and gets result
+//
+//            DiseaseDetection.Outputs outputs = model.process(inputFeature0);
+//            TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+//
+//            float[] confidence = outputFeature0.getFloatArray();
+//
+//            // find the index of class with maximum confidence
+//
+//            int maxPos = 0;
+//            float maxConfidence = confidence[0];
+//            for(int i = 0; i < confidence.length; i++){
+//                if(confidence[i] > maxConfidence){
+//                    maxConfidence = confidence[i];
+//                    maxPos = i;
+//                }
+//            }
+//
+//            String[] classes = {"Apple black rot" , "Corn gray leaf spot" ," Grape black rot", "Orange haunglongbing", "Peach bacterial spot", "Potato early blight",  "Strawberry leaf scorch" };
+//
+//            result.setText(classes[maxPos]);
+//            result.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    startActivity(new Intent(Intent.ACTION_VIEW,
+//                            Uri.parse("https://www.google.com/search?q="+ result.getText().toString())));
+//                }
+//            });
+//
+//            model.close();
+//        }
+//
+//        catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 }
